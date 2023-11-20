@@ -22,6 +22,12 @@ WARN[0000] empty lines at the end of file should be trimmed  file_path=bar.json 
 bar.json
 ```
 
+## Motivation
+
+Each line should have a newline of the end of line because [that’s how the POSIX standard defines a line](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_206):
+
+Please see https://stackoverflow.com/a/729795/6364492
+
 ## Install
 
 Coming soon.
