@@ -75,5 +75,5 @@ func (c *Controller) handleFileContent(logE *logrus.Entry, param *ParamRun, cont
 		return "", errors.New("empty lines at the end of file should be trimmed")
 	}
 	logE.Warn("empty lines at the end of file should be trimmed")
-	return strings.TrimSuffix(content, "\n") + "\n", nil
+	return strings.TrimSuffix(content, "\n"), nil
 }
