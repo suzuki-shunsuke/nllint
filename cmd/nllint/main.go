@@ -7,7 +7,6 @@ import (
 	"syscall"
 
 	"github.com/sirupsen/logrus"
-	"github.com/suzuki-shunsuke/logrus-error/logerr"
 	"github.com/suzuki-shunsuke/nllint/pkg/cli"
 	"github.com/suzuki-shunsuke/nllint/pkg/log"
 )
@@ -25,7 +24,7 @@ type HasExitCode interface {
 func main() {
 	logE := log.New(version)
 	if err := core(logE); err != nil {
-		logerr.WithError(logE, err).Fatal("nllint failed")
+		os.Exit(1)
 	}
 }
 
