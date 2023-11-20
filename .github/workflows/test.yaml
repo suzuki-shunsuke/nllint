@@ -10,6 +10,7 @@ jobs:
       renovate-config-validator: ${{steps.changes.outputs.renovate-config-validator}}
       ghalint: ${{steps.changes.outputs.ghalint}}
       go-mod-tidy: ${{steps.changes.outputs.go-mod-tidy}}
+      nllint: ${{steps.changes.outputs.nllint_files}}
     runs-on: ubuntu-latest
     permissions: {}
     steps:
@@ -38,6 +39,8 @@ jobs:
               - "**.go"
               - .github/workflows/test.yaml
               - .github/workflows/wc-go-mod-tidy.yaml
+            nllint:
+              - "**"
 
   enable-automerge:
     uses: ./.github/workflows/wc-enable-auto-merge.yaml
@@ -97,6 +100,8 @@ jobs:
     uses: ./.github/workflows/wc-test.yaml
     needs: path-filter
     permissions: {}
+    with:
+      files: ${{needs.path-filter.outputs.nllint}}
 
   go-mod-tidy:
     uses: ./.github/workflows/wc-go-mod-tidy.yaml
