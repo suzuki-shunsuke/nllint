@@ -63,6 +63,9 @@ func (c *Controller) handleFileContent(logE *logrus.Entry, param *ParamRun, cont
 			return "", errors.New("a newline at the end of file is missing")
 		}
 		logE.Warn("a newline at the end of file is missing")
+		if param.EmptyLine {
+			return strings.TrimSpace(content) + "\n", nil
+		}
 		return content + "\n", nil
 	}
 	if !param.EmptyLine {
