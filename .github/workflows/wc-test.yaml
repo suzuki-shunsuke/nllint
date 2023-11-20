@@ -1,0 +1,71 @@
+---
+name: test
+on:
+  workflow_call:
+    inputs:
+      files:
+        type: string
+        required: true
+    secrets:
+      gh_app_id:
+        required: true
+      gh_app_private_key:
+        required: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe # v4.1.0
+        with:
+          go-version: 1.21.4
+          cache: true
+      - uses: aquaproj/aqua-installer@d9c4b5d107a17831a8c8718efa4ce67a0923d1f5 # v2.1.3
+        with:
+          aqua_version: v2.18.0
+        env:
+          AQUA_GITHUB_TOKEN: ${{github.token}}
+      - run: ghcp -v
+        if: |
+          github.event_name != 'pull_request' || ! github.event.pull_request.head.repo.fork
+      - run: golangci-lint run --timeout 120s
+        env:
+          AQUA_GITHUB_TOKEN: ${{github.token}}
+      - run: go test -v ./... -race -covermode=atomic
+      - run: go install ./cmd/nllint
+      - run: nllint --version
+      - run: |
+          # shellcheck disable=SC2086
+          nllint -e $FILES
+        if: |
+          github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork
+        env:
+          FILES: ${{inputs.files}}
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
+        with:
+          app_id: ${{secrets.gh_app_id}}
+          private_key: ${{secrets.gh_app_private_key}}
+        if: |
+          github.event_name != 'pull_request' || ! github.event.pull_request.head.repo.fork
+      - run: |
+          tempfile=$(mktemp)
+          # shellcheck disable=SC2086
+          nllint -e -f $FILES > "$tempfile"
+          [ -s "$tempfile" ] || exit 0
+          # shellcheck disable=SC2002
+          cat "$tempfile" |
+            xargs ghcp commit \
+              -r "$GITHUB_REPOSITORY" \
+              -b "${GITHUB_HEAD_REF}" \
+              -m "style(nllint): format code"
+          exit 1
+        env:
+          FILES: ${{inputs.files}}
+          GITHUB_TOKEN: ${{steps.generate_token.outputs.token}} # Use GitHub App to trigger GitHub Actions Workflow by merge commit.
+        if: |
+          github.event_name != 'pull_request' || ! github.event.pull_request.head.repo.fork
