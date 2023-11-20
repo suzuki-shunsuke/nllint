@@ -32,12 +32,17 @@ jobs:
       - run: go test -v ./... -race -covermode=atomic
       - run: go install ./cmd/nllint
       - run: nllint --version
-      - run: echo "$FILES" | xargs nllint -e
+      - run: |
+          # shellcheck disable=SC2086
+          nllint -e $FILES
         if: |
           github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork
+        env:
+          FILES: ${{inputs.files}}
       - run: |
           tempfile=$(mktemp)
-          echo "$FILES" | xargs nllint -e -f > "$tempfile"
+          # shellcheck disable=SC2086
+          nllint -e -f $FILES > "$tempfile"
           [ -s "$tempfile" ] || exit 0
           # shellcheck disable=SC2002
           cat "$tempfile" |
@@ -47,6 +52,6 @@ jobs:
               -m "style(nllint): format code"
           exit 1
         env:
-          FILES: ${{join(fromJSON(inputs.files), '\n')}}
+          FILES: ${{inputs.files}}
         if: |
           github.event_name != 'pull_request' || ! github.event.pull_request.head.repo.fork

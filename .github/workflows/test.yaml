@@ -17,6 +17,7 @@ jobs:
       - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # v2.11.1
         id: changes
         with:
+          list-files: shell
           filters: |
             update-aqua-checksums:
               - aqua/aqua.yaml
@@ -41,10 +42,6 @@ jobs:
               - .github/workflows/wc-go-mod-tidy.yaml
             nllint:
               - "**"
-      - run: echo "$OUTPUTS"
-        env:
-          OUTPUTS: ${{toJSON(steps.changes.outputs)}}
-
 
   enable-automerge:
     uses: ./.github/workflows/wc-enable-auto-merge.yaml
