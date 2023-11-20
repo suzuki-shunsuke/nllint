@@ -7,7 +7,7 @@ import (
 func New(version string) *logrus.Entry {
 	return logrus.WithFields(logrus.Fields{
 		"nllint_version": version,
-		"program":         "nllint",
+		"program":        "nllint",
 	})
 }
 
