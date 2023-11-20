@@ -50,6 +50,19 @@ Options:
   -empty-line, -e  Disallow leading and trailing white spaces in files
 ```
 
+## :bulb: Auto Fix by CI
+
+It's useful to format code automatically with nllint and push a commit to the remote branch in CI.
+
+1. List changed files
+1. Run `nllint -f [-e] [<changed files>...]`
+1. Push a commit to the remote branch
+
+Please refer to this repository's workflows as the example.
+
+- [test.yaml](.github/workflows/test.yaml)
+- [wc-test.yaml](.github/workflows/wc-test.yaml)
+
 ## LICENSE
 
 [MIT](LICENSE)
