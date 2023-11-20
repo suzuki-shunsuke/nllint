@@ -26,7 +26,7 @@ func (c *Controller) Run(_ context.Context, logE *logrus.Entry, param *ParamRun)
 			logerr.WithError(logE, err).Error("a file is invalid")
 		}
 	}
-	if !failed {
+	if failed {
 		return errors.New("some files are invalid")
 	}
 	return nil
