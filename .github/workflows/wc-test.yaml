@@ -39,6 +39,7 @@ jobs:
           tempfile=$(mktemp)
           echo "$FILES" | xargs nllint -e -f > "$tempfile"
           [ -s "$tempfile" ] || exit 0
+          # shellcheck disable=SC2002
           cat "$tempfile" |
             xargs ghcp commit \
               -r "$GITHUB_REPOSITORY" \
