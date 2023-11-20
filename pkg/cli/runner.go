@@ -63,7 +63,7 @@ Options:
   -help, -h        Show help
   -version, -v     Show version
 	-fix, -f         Fix files
-	-empty-line, -e  Disallow empty lines at the end of files
+	-empty-line, -e  Disallow leading and trailing white spaces in files
 `,
 		Version: r.LDFlags.VersionString(),
 		Flags: []cli.Flag{
