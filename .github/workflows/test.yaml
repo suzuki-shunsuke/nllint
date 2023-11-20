@@ -41,9 +41,9 @@ jobs:
               - .github/workflows/wc-go-mod-tidy.yaml
             nllint:
               - "**"
-      - run: echo "$FILES"
+      - run: echo "$OUTPUTS"
         env:
-          FILES: ${{steps.changes.outputs.nllint_files}}
+          OUTPUTS: ${{toJSON(steps.changes.outputs)}}
 
 
   enable-automerge:
