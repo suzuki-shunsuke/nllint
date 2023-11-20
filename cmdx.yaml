@@ -17,23 +17,6 @@ tasks:
   description: lint the go code
   usage: lint the go code
   script: golangci-lint run
-- name: release
-  short: r
-  description: release the new version
-  usage: release the new version
-  script: |
-    set -eux
-    go run ./cmd/nllint \
-      -owner suzuki-shunsuke \
-      -repo nllint \
-      -sha "$(git rev-parse HEAD)" \
-      -msg "chore: release {{.version}}" "{{.version}}" \
-      "{{.version}}"
-  args:
-  - name: version
-    required: true
-    validate:
-    - regexp: "^v\\d+\\.\\d+.\\d+(-.+)?$"
 - name: coverage
   short: c
   description: coverage test
