@@ -1,0 +1,35 @@
+---
+name: Create a GitHub Tag
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        required: true
+permissions: {}
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe # v4.1.0
+        with:
+          go-version: 1.21.3
+          cache: true
+
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
+        with:
+          app_id: ${{secrets.APP_ID}}
+          private_key: ${{secrets.APP_PRIVATE_KEY}}
+          permissions: >-
+            {"contents": "write"}
+          repositories: >-
+            ["suzuki-shunsuke/nllint"]
+
+      - run: |
+          go run ./cmd/nllint -msg "chore: release $TAG" "$TAG"
+        env:
+          TAG: ${{inputs.tag}}
+          GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
