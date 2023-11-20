@@ -103,6 +103,9 @@ jobs:
     permissions: {}
     with:
       files: ${{needs.path-filter.outputs.nllint}}
+    secrets:
+      gh_app_id: ${{secrets.APP_ID}}
+      gh_app_private_key: ${{secrets.APP_PRIVATE_KEY}}
 
   go-mod-tidy:
     uses: ./.github/workflows/wc-go-mod-tidy.yaml

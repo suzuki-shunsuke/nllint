@@ -6,6 +6,11 @@ on:
       files:
         type: string
         required: true
+    secrets:
+      gh_app_id:
+        required: true
+      gh_app_private_key:
+        required: true
 
 jobs:
   test:
@@ -39,6 +44,14 @@ jobs:
           github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork
         env:
           FILES: ${{inputs.files}}
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
+        with:
+          app_id: ${{secrets.gh_app_id}}
+          private_key: ${{secrets.gh_app_private_key}}
+        if: |
+          github.event_name != 'pull_request' || ! github.event.pull_request.head.repo.fork
       - run: |
           tempfile=$(mktemp)
           # shellcheck disable=SC2086
@@ -53,5 +66,6 @@ jobs:
           exit 1
         env:
           FILES: ${{inputs.files}}
+          GITHUB_TOKEN: ${{steps.generate_token.outputs.token}} # Use GitHub App to trigger GitHub Actions Workflow by merge commit.
         if: |
           github.event_name != 'pull_request' || ! github.event.pull_request.head.repo.fork
