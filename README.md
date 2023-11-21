@@ -9,13 +9,13 @@ $ echo -n "{}\n\n" > bar.json
 $ nllint foo.json bar.json
 ERRO[0000] a file is invalid                             error="a newline at the end of file is missing" file_path=foo.json nllint_version= program=nllint
 
-# --empty-line (-e): Check leading and trailing white spaces in files
-$ nllint -e foo.json bar.json
+# --trim-space (-s): Check leading and trailing white spaces in files
+$ nllint -s foo.json bar.json
 ERRO[0000] a file is invalid                             error="a newline at the end of file is missing" file_path=foo.json nllint_version= program=nllint
 ERRO[0000] a file is invalid                             error="empty lines at the end of file should be trimmed" file_path=bar.json nllint_version= program=nllint
 
 # -fix (-f): Fix files and outputs fixed file paths to the stdout
-$ nllint -e -fix foo.json bar.json
+$ nllint -s -fix foo.json bar.json
 WARN[0000] a newline at the end of file is missing       file_path=foo.json nllint_version= program=nllint
 foo.json
 WARN[0000] empty lines at the end of file should be trimmed  file_path=bar.json nllint_version= program=nllint
