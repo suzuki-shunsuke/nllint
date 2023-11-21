@@ -57,13 +57,13 @@ func (r *Runner) Run(ctx context.Context, args ...string) error {
 https://github.com/suzuki-shunsuke/nllint
 
 Usage:
-  nllint [-fix] [-empty-line] <file path> [<file path>...]
+  nllint [-fix (-f)] [-trim-space (-s)] <file path> [<file path>...]
 
 Options:
   -help, -h        Show help
   -version, -v     Show version
 	-fix, -f         Fix files
-	-empty-line, -e  Disallow leading and trailing white spaces in files
+	-trim-space, -s  Disallow leading and trailing white spaces in files
 `,
 		Version: r.LDFlags.VersionString(),
 		Flags: []cli.Flag{
@@ -73,9 +73,9 @@ Options:
 				Usage:   "Fix files",
 			},
 			&cli.BoolFlag{
-				Name:    "empty-line",
-				Aliases: []string{"e"},
-				Usage:   "Disallow empty lines at the end of files",
+				Name:    "trim-space",
+				Aliases: []string{"s"},
+				Usage:   "Disallow leading and trailing white spaces in files",
 			},
 		},
 		Action: r.run,
@@ -86,9 +86,9 @@ Options:
 
 func (r *Runner) run(c *cli.Context) error {
 	param := &controller.ParamRun{
-		Fix:       c.Bool("fix"),
-		EmptyLine: c.Bool("empty-line"),
-		Args:      c.Args().Slice(),
+		Fix:         c.Bool("fix"),
+		IsTrimSpace: c.Bool("trim-space"),
+		Args:        c.Args().Slice(),
 	}
 
 	ctrl := controller.New(afero.NewOsFs(), r.Stdout)

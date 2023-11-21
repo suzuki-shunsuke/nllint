@@ -12,9 +12,9 @@ import (
 )
 
 type ParamRun struct {
-	Fix       bool
-	EmptyLine bool
-	Args      []string
+	Fix         bool
+	IsTrimSpace bool
+	Args        []string
 }
 
 func (c *Controller) Run(_ context.Context, logE *logrus.Entry, param *ParamRun) error {
@@ -63,9 +63,12 @@ func (c *Controller) handleFileContent(logE *logrus.Entry, param *ParamRun, cont
 			return "", errors.New("a newline at the end of file is missing")
 		}
 		logE.Warn("a newline at the end of file is missing")
+		if param.IsTrimSpace {
+			return strings.TrimSpace(content) + "\n", nil
+		}
 		return content + "\n", nil
 	}
-	if !param.EmptyLine {
+	if !param.IsTrimSpace {
 		return "", nil
 	}
 	newContent := strings.TrimSpace(content) + "\n"
@@ -73,8 +76,8 @@ func (c *Controller) handleFileContent(logE *logrus.Entry, param *ParamRun, cont
 		return "", nil
 	}
 	if !param.Fix {
-		return "", errors.New("empty lines at the end of file should be trimmed")
+		return "", errors.New("leading and trailing white spaces in files should be trimmed")
 	}
-	logE.Warn("empty lines at the end of file should be trimmed")
+	logE.Warn("leading and trailing white spaces in files should be trimmed")
 	return newContent, nil
 }
