@@ -2,6 +2,12 @@
 
 Linter to check newlines at the end of files
 
+<img width="870" alt="image" src="https://github.com/suzuki-shunsuke/nllint/assets/13323303/6962481e-d74e-47a6-bdd0-cd31edae1771">
+
+--
+
+<img width="982" alt="image" src="https://github.com/suzuki-shunsuke/nllint/assets/13323303/5cc5cf3f-874b-4465-834c-5bba55285fa8">
+
 ```console
 $ echo -n {} > foo.json
 $ echo -n "{}\n\n" > bar.json
@@ -52,6 +58,12 @@ Options:
 ```
 
 ## :bulb: Auto Fix by CI
+
+<img width="870" alt="image" src="https://github.com/suzuki-shunsuke/nllint/assets/13323303/6962481e-d74e-47a6-bdd0-cd31edae1771">
+
+--
+
+<img width="982" alt="image" src="https://github.com/suzuki-shunsuke/nllint/assets/13323303/5cc5cf3f-874b-4465-834c-5bba55285fa8">
 
 It's useful to format code automatically with nllint and push a commit to the remote branch in CI.
 
