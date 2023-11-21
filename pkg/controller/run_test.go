@@ -11,7 +11,7 @@ import (
 	"github.com/suzuki-shunsuke/nllint/pkg/controller"
 )
 
-func TestController_Run(t *testing.T) { //nolint:funlen,gocognit
+func TestController_Run(t *testing.T) { //nolint:funlen,gocognit,cyclop
 	t.Parallel()
 	data := []struct {
 		name     string
