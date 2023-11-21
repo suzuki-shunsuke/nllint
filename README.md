@@ -51,7 +51,13 @@ scoop bucket add suzuki-shunsuke https://github.com/suzuki-shunsuke/scoop-bucket
 scoop install nllint
 ```
 
-3. Download a prebuilt binary from [GitHub Releases](https://github.com/suzuki-shunsuke/nllint/releases) and install it into `$PATH`
+3. [aqua](https://aquaproj.github.io/)
+
+```sh
+aqua g -i suzuki-shunsuke/nllint
+```
+
+4. Download a prebuilt binary from [GitHub Releases](https://github.com/suzuki-shunsuke/nllint/releases) and install it into `$PATH`
 
 ## Usage
 
