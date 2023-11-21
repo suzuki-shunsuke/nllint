@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/sirupsen/logrus"
@@ -12,9 +13,10 @@ import (
 )
 
 type ParamRun struct {
-	Fix         bool
-	IsTrimSpace bool
-	Args        []string
+	Fix            bool
+	IsTrimSpace    bool
+	IgnoreNotFound bool
+	Args           []string
 }
 
 func (c *Controller) Run(_ context.Context, logE *logrus.Entry, param *ParamRun) error {
@@ -35,6 +37,10 @@ func (c *Controller) Run(_ context.Context, logE *logrus.Entry, param *ParamRun)
 func (c *Controller) handleFile(logE *logrus.Entry, param *ParamRun, filePath string) error {
 	f, err := afero.ReadFile(c.fs, filePath)
 	if err != nil {
+		if errors.Is(err, os.ErrNotExist) && param.IgnoreNotFound {
+			logE.Warn("ignore a file because it doesn't exist")
+			return nil
+		}
 		return fmt.Errorf("open a file: %w", err)
 	}
 	content, err := c.handleFileContent(logE, param, string(f))

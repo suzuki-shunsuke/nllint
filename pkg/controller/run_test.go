@@ -26,6 +26,32 @@ func TestController_Run(t *testing.T) { //nolint:funlen,gocognit,cyclop
 			param: &controller.ParamRun{},
 		},
 		{
+			name: "not found files",
+			files: map[string]string{
+				"foo": "hello\n",
+			},
+			expFiles: map[string]string{
+				"foo": "hello\n",
+			},
+			param: &controller.ParamRun{
+				Args: []string{"bar"},
+			},
+			isErr: true,
+		},
+		{
+			name: "ignore not found files",
+			files: map[string]string{
+				"foo": "hello\n",
+			},
+			expFiles: map[string]string{
+				"foo": "hello\n",
+			},
+			param: &controller.ParamRun{
+				Args:           []string{"bar"},
+				IgnoreNotFound: true,
+			},
+		},
+		{
 			name: "no change",
 			files: map[string]string{
 				"foo": "hello\n",
