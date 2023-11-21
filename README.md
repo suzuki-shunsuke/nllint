@@ -55,13 +55,19 @@ Options:
 It's useful to format code automatically with nllint and push a commit to the remote branch in CI.
 
 1. List changed files
-1. Run `nllint -f [-e] [<changed files>...]`
+1. Run `nllint -f [-s] [<changed files>...]`
 1. Push a commit to the remote branch
 
 Please refer to this repository's workflows as the example.
 
 - [test.yaml](.github/workflows/test.yaml)
 - [wc-test.yaml](.github/workflows/wc-test.yaml)
+
+`nllint` is enough fast, so we think it's also okay to lint all files instead of only changed files.
+
+```sh
+git ls-files | xargs nllint -f -s
+```
 
 ## LICENSE
 
