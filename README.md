@@ -41,13 +41,13 @@ nllint - Check newlines at the end of files
 https://github.com/suzuki-shunsuke/nllint
 
 Usage:
-  nllint [-fix] [-empty-line] <file path> [<file path>...]
+  nllint [-fix (-f)] [-trim-space (-s)] <file path> [<file path>...]
 
 Options:
   -help, -h        Show help
   -version, -v     Show version
   -fix, -f         Fix files
-  -empty-line, -e  Disallow leading and trailing white spaces in files
+  -trim-space, -s  Disallow leading and trailing white spaces in files
 ```
 
 ## :bulb: Auto Fix by CI
