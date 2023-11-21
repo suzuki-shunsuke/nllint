@@ -39,7 +39,7 @@ jobs:
       - run: nllint --version
       - run: |
           # shellcheck disable=SC2086
-          nllint -s $FILES
+          nllint -i -s $FILES
         if: |
           github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork
         env:
@@ -55,7 +55,7 @@ jobs:
       - run: |
           tempfile=$(mktemp)
           # shellcheck disable=SC2086
-          nllint -s -f $FILES > "$tempfile"
+          nllint -i -s -f $FILES > "$tempfile"
           [ -s "$tempfile" ] || exit 0
           echo "::warning::Pushing a commit for auto code format with nllint https://github.com/suzuki-shunsuke/nllint"
           # shellcheck disable=SC2002
