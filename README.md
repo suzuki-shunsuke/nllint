@@ -41,13 +41,13 @@ nllint - Check newlines at the end of files
 https://github.com/suzuki-shunsuke/nllint
 
 Usage:
-  nllint [-fix] [-empty-line] <file path> [<file path>...]
+  nllint [-fix (-f)] [-trim-space (-s)] <file path> [<file path>...]
 
 Options:
   -help, -h        Show help
   -version, -v     Show version
   -fix, -f         Fix files
-  -empty-line, -e  Disallow leading and trailing white spaces in files
+  -trim-space, -s  Disallow leading and trailing white spaces in files
 ```
 
 ## :bulb: Auto Fix by CI
@@ -55,13 +55,19 @@ Options:
 It's useful to format code automatically with nllint and push a commit to the remote branch in CI.
 
 1. List changed files
-1. Run `nllint -f [-e] [<changed files>...]`
+1. Run `nllint -f [-s] [<changed files>...]`
 1. Push a commit to the remote branch
 
 Please refer to this repository's workflows as the example.
 
 - [test.yaml](.github/workflows/test.yaml)
 - [wc-test.yaml](.github/workflows/wc-test.yaml)
+
+`nllint` is enough fast, so we think it's also okay to lint all files instead of only changed files.
+
+```sh
+git ls-files | xargs nllint -f -s
+```
 
 ## LICENSE
 
