@@ -44,10 +44,10 @@ Usage:
   nllint [-fix (-f)] [-trim-space (-s)] [-ignore-notfound (-i)] <file path> [<file path>...]
 
 Options:
-  -help, -h        Show help
-  -version, -v     Show version
-  -fix, -f         Fix files
-  -trim-space, -s  Disallow leading and trailing white spaces in files
+  -help, -h             Show help
+  -version, -v          Show version
+  -fix, -f              Fix files
+  -trim-space, -s       Disallow leading and trailing white spaces in files
   -ignore-notfound, -i  Ignore not found files
 ```
 
