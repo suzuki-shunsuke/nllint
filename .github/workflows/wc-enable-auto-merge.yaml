@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
-      - uses: suzuki-shunsuke/enable-auto-merge-action@af362588d08e8cd3eb3141988701ed36ee6d8c7d # v0.1.0-2
+      - uses: suzuki-shunsuke/enable-auto-merge-action@80648224ba9bd58ea503c99823a3ae4c2454d159 # v0.1.0-3
         with:
           pr_number: ${{github.event.pull_request.number}}
           merge_method: squash
