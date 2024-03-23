@@ -145,7 +145,6 @@ func TestController_Run(t *testing.T) { //nolint:funlen,gocognit,cyclop
 		},
 	}
 	for _, d := range data {
-		d := d
 		t.Run(d.name, func(t *testing.T) {
 			t.Parallel()
 			fs := afero.NewMemMapFs()
