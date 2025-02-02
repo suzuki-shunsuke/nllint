@@ -1,83 +1,27 @@
 ---
 name: test
-on:
-  workflow_call:
-    inputs:
-      files:
-        type: string
-        required: true
-    secrets:
-      gh_app_id:
-        required: true
-      gh_app_private_key:
-        required: true
-
+on: workflow_call
 jobs:
   test:
-    timeout-minutes: 30
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     permissions: {}
     steps:
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
       - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
         with:
-          go-version: 1.23.5
-          cache: true
+          go-version-file: go.mod
       - uses: aquaproj/aqua-installer@e2d0136abcf70b7a2f6f505720640750557c4b33 # v3.1.1
         with:
           aqua_version: v2.43.0
         env:
           AQUA_GITHUB_TOKEN: ${{github.token}}
-      - run: ghcp -v
-        if: |
-          github.event_name != 'pull_request' || ! github.event.pull_request.head.repo.fork
       - run: golangci-lint run --timeout 120s
         env:
           AQUA_GITHUB_TOKEN: ${{github.token}}
       - run: go test -v ./... -race -covermode=atomic
       - run: go install ./cmd/nllint
       - run: nllint --version
-      - run: |
-          # shellcheck disable=SC2086
-          nllint -i -s $FILES
-        if: |
-          github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork
-        env:
-          FILES: ${{inputs.files}}
-      - name: Generate token
-        id: generate_token
-        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
-        with:
-          app_id: ${{secrets.gh_app_id}}
-          private_key: ${{secrets.gh_app_private_key}}
-          permissions: >-
-            {
-              "contents": "write"
-            }
-          repositories: >-
-            [
-              "${{github.event.repository.name}}"
-            ]
-        if: |
-          github.event_name != 'pull_request' || ! github.event.pull_request.head.repo.fork
-      - run: |
-          tempfile=$(mktemp)
-          # shellcheck disable=SC2086
-          nllint -i -s -f $FILES > "$tempfile"
-          [ -s "$tempfile" ] || exit 0
-          echo "::warning::Pushing a commit for auto code format with nllint https://github.com/suzuki-shunsuke/nllint"
-          # shellcheck disable=SC2002
-          cat "$tempfile" |
-            xargs ghcp commit \
-              -r "$GITHUB_REPOSITORY" \
-              -b "${GITHUB_HEAD_REF}" \
-              -m "style(nllint): format code"
-          exit 1
-        env:
-          FILES: ${{inputs.files}}
-          GITHUB_TOKEN: ${{steps.generate_token.outputs.token}} # Use GitHub App to trigger GitHub Actions Workflow by merge commit.
-        if: |
-          github.event_name != 'pull_request' || ! github.event.pull_request.head.repo.fork
+      - run: git ls-files | xargs nllint -f -s
