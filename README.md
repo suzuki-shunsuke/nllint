@@ -106,4 +106,3 @@ git ls-files | xargs nllint -f -s
 ## LICENSE
 
 [MIT](LICENSE)
-

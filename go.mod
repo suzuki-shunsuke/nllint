@@ -3,6 +3,7 @@ module github.com/suzuki-shunsuke/nllint
 go 1.22.2
 
 require (
+	github.com/google/go-cmp v0.6.0
 	github.com/mattn/go-colorable v0.1.14
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/afero v1.12.0
