@@ -8,7 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
 	"github.com/suzuki-shunsuke/nllint/pkg/controller"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 type Runner struct {
@@ -49,10 +49,10 @@ func (l *LDFlags) VersionString() string {
 }
 
 func (r *Runner) Run(ctx context.Context, args ...string) error {
-	app := &cli.App{
+	app := &cli.Command{
 		Name:  "nllint",
 		Usage: "Check newlines at the end of files",
-		CustomAppHelpTemplate: `nllint - Check newlines at the end of files
+		CustomRootCommandHelpTemplate: `nllint - Check newlines at the end of files
 
 https://github.com/suzuki-shunsuke/nllint
 
@@ -87,10 +87,10 @@ Options:
 		Action: r.run,
 	}
 
-	return app.RunContext(ctx, args) //nolint:wrapcheck
+	return app.Run(ctx, args) //nolint:wrapcheck
 }
 
-func (r *Runner) run(c *cli.Context) error {
+func (r *Runner) run(ctx context.Context, c *cli.Command) error {
 	param := &controller.ParamRun{
 		Fix:            c.Bool("fix"),
 		IsTrimSpace:    c.Bool("trim-space"),
@@ -99,5 +99,5 @@ func (r *Runner) run(c *cli.Context) error {
 	}
 
 	ctrl := controller.New(afero.NewOsFs(), r.Stdout)
-	return ctrl.Run(c.Context, r.LogE, param) //nolint:wrapcheck
+	return ctrl.Run(ctx, r.LogE, param) //nolint:wrapcheck
 }
