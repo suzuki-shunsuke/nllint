@@ -2,7 +2,6 @@ package controller_test
 
 import (
 	"bytes"
-	"context"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -155,7 +154,7 @@ func TestController_Run(t *testing.T) { //nolint:funlen,gocognit,cyclop
 			}
 			buf := &bytes.Buffer{}
 			ctrl := controller.New(fs, buf)
-			if err := ctrl.Run(context.Background(), logrus.NewEntry(logrus.New()), d.param); err != nil {
+			if err := ctrl.Run(t.Context(), logrus.NewEntry(logrus.New()), d.param); err != nil {
 				if !d.isErr {
 					t.Fatal(err)
 				}
