@@ -1,6 +1,31 @@
 {
   "checksums": [
     {
+      "id": "github_release/github.com/anchore/syft/v1.28.0/syft_1.28.0_darwin_amd64.tar.gz",
+      "checksum": "15067673A0EA8AEBA31E2A53DEB1633EAC5C0024AB73BDFF91CFFB157735D90A",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/anchore/syft/v1.28.0/syft_1.28.0_darwin_arm64.tar.gz",
+      "checksum": "8666A08560B7AFB3A547A5CD596880C9FF51736A4C49B1576009AEF292C08343",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/anchore/syft/v1.28.0/syft_1.28.0_linux_amd64.tar.gz",
+      "checksum": "3EDEE7FE1CEB1F78360E547F57048930D57F00C7EC3D0B8BDFB902805F048468",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/anchore/syft/v1.28.0/syft_1.28.0_linux_arm64.tar.gz",
+      "checksum": "95C8533C46D4A952A576365F373D04FC0A4348E7335CBB82AC3EA2BC66E1E58B",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/anchore/syft/v1.28.0/syft_1.28.0_windows_amd64.zip",
+      "checksum": "A1637FDC074E9C80C6BF900DF26A883516BF32E90499E3BD9AA314493D40A0A8",
+      "algorithm": "sha256"
+    },
+    {
       "id": "github_release/github.com/golangci/golangci-lint/v2.1.6/golangci-lint-2.1.6-darwin-amd64.tar.gz",
       "checksum": "E091107C4CA7E283902343BA3A09D14FB56B86E071EFFD461CE9D67193EF580E",
       "algorithm": "sha256"
@@ -141,28 +166,28 @@
       "algorithm": "sha256"
     },
     {
-      "id": "github_release/github.com/sigstore/cosign/v1.13.6/cosign-darwin-amd64",
-      "checksum": "368591BA2AA3E643FF484BB4966E639640EFC530A730B8CE1ABC692EC0A91EC4",
+      "id": "github_release/github.com/sigstore/cosign/v2.5.2/cosign-darwin-amd64",
+      "checksum": "0681ABE20A482F4B9B3ED65B3DEBB8C6346591F2DC484B6BFA79609FF1318DE4",
       "algorithm": "sha256"
     },
     {
-      "id": "github_release/github.com/sigstore/cosign/v1.13.6/cosign-darwin-arm64",
-      "checksum": "D0001CA1EA7EEB8E987D6437D82356562811B1481297DAB59D42B0E7F5E8DB33",
+      "id": "github_release/github.com/sigstore/cosign/v2.5.2/cosign-darwin-arm64",
+      "checksum": "51FDC6D8DA8310D72DF10065A52247B6BEBFE990D4C946DD9F71E17588256011",
       "algorithm": "sha256"
     },
     {
-      "id": "github_release/github.com/sigstore/cosign/v1.13.6/cosign-linux-amd64",
-      "checksum": "7810559E2EB53D2A8011D01B3B1ED3DC1CFC33D2B04B973065768EFC93C13BF9",
+      "id": "github_release/github.com/sigstore/cosign/v2.5.2/cosign-linux-amd64",
+      "checksum": "BCFEAE05557A9F313EE4392D2F335D0FF69EBBFD232019E3736FB04999FE1734",
       "algorithm": "sha256"
     },
     {
-      "id": "github_release/github.com/sigstore/cosign/v1.13.6/cosign-linux-arm64",
-      "checksum": "746AC88CE1926EBB3CE3A685B82B0780F8693B0A2DEFFDBDBA679573A3CE6528",
+      "id": "github_release/github.com/sigstore/cosign/v2.5.2/cosign-linux-arm64",
+      "checksum": "2CBCEA1873AD76274C3F241EF175D204654E3AAC3E73E6EC4504E5227015CB0A",
       "algorithm": "sha256"
     },
     {
-      "id": "github_release/github.com/sigstore/cosign/v1.13.6/cosign-windows-amd64.exe",
-      "checksum": "7798E5D89AA7785DFC19B0FF36E331BBF01121CA198014FD31BFC79BD90444B6",
+      "id": "github_release/github.com/sigstore/cosign/v2.5.2/cosign-windows-amd64.exe",
+      "checksum": "FEF1C4731DA9112D4CF2F6D93AE2A1551C73116A4F73FAB7B0C15B38E95FF688",
       "algorithm": "sha256"
     },
     {
