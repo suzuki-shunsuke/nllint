@@ -3,6 +3,10 @@ version: 2
 project_name: nllint
 archives:
   - name_template: "{{.ProjectName}}_{{.Os}}_{{.Arch}}"
+    files:
+      - LICENSE
+      - README.md
+      - third_party_licenses/**/*
     format_overrides:
       - goos: windows
         formats: [zip]
