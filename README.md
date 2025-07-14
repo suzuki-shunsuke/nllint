@@ -1,6 +1,6 @@
 # nllint
 
-Linter to check newlines at the end of files
+Linter and formatter of newlines and trailing spaces in files
 
 <img width="870" alt="image" src="https://github.com/suzuki-shunsuke/nllint/assets/13323303/6962481e-d74e-47a6-bdd0-cd31edae1771">
 
