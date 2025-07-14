@@ -68,15 +68,15 @@ nllint - Check newlines at the end of files
 https://github.com/suzuki-shunsuke/nllint
 
 Usage:
-  nllint [-fix (-f)] [-trim-space (-s)] [-ignore-notfound (-i)] <file path> [<file path>...]
+  nllint [-fix (-f)] [-trim-space (-s)] [-trim-trailing-space (-S)] [-ignore-notfound (-i)] <file path> [<file path>...]
 
 Options:
-  -help, -h             Show help
-  -version, -v          Show version
-  -fix, -f              Fix files
-  -trim-space, -s       Disallow leading and trailing white spaces in files
+  -help, -h                 Show help
+  -version, -v              Show version
+  -fix, -f                  Fix files
+  -trim-space, -s           Disallow leading and trailing white spaces in files
   -trim-trailing-space, -S  Disallow trailing white spaces in each line
-  -ignore-notfound, -i  Ignore not found files
+  -ignore-notfound, -i      Ignore not found files
 ```
 
 ## :bulb: Auto Fix by CI

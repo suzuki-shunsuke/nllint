@@ -57,7 +57,7 @@ func (r *Runner) Run(ctx context.Context, args ...string) error {
 https://github.com/suzuki-shunsuke/nllint
 
 Usage:
-  nllint [-fix (-f)] [-trim-space (-s)] [-ignore-notfound (-i)] <file path> [<file path>...]
+  nllint [-fix (-f)] [-trim-space (-s)] [-trim-trailing-space (-S)] [-ignore-notfound (-i)] <file path> [<file path>...]
 
 Options:
   -help, -h                 Show help
