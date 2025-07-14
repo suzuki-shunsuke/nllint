@@ -36,7 +36,7 @@ Please see https://stackoverflow.com/a/729795/6364492
 
 ## Install
 
-nllint is a single binary written in [Go](https://go.dev/). So you only need to install an execurable file into `$PATH`.
+nllint is a single binary written in [Go](https://go.dev/). So you only need to install an executable file into `$PATH`.
 
 1. [Homebrew](https://brew.sh/)
 
