@@ -75,6 +75,7 @@ Options:
   -version, -v          Show version
   -fix, -f              Fix files
   -trim-space, -s       Disallow leading and trailing white spaces in files
+  -trim-trailing-space, -S  Disallow trailing white spaces in each line
   -ignore-notfound, -i  Ignore not found files
 ```
 

@@ -89,8 +89,8 @@ func handleFileContent(logE *logrus.Entry, param *ParamRun, content string) (str
 		return "", nil
 	}
 	if !param.Fix {
-		return "", errors.New("white spaces in files should be trimmed")
+		return "", errors.New("a file should be fixed")
 	}
-	logE.Info("white spaces in files are trimmed")
+	logE.Info("a file is fixed")
 	return newContent, nil
 }
