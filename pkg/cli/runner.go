@@ -60,11 +60,12 @@ Usage:
   nllint [-fix (-f)] [-trim-space (-s)] [-ignore-notfound (-i)] <file path> [<file path>...]
 
 Options:
-  -help, -h             Show help
-  -version, -v          Show version
-  -fix, -f              Fix files
-  -trim-space, -s       Disallow leading and trailing white spaces in files
-  -ignore-notfound, -i  Ignore not found files
+  -help, -h                 Show help
+  -version, -v              Show version
+  -fix, -f                  Fix files
+  -trim-space, -s           Disallow leading and trailing white spaces in files
+  -trim-trailing-space, -S  Disallow trailing white spaces in each line
+  -ignore-notfound, -i      Ignore not found files
 `,
 		Version: r.LDFlags.VersionString(),
 		Flags: []cli.Flag{
@@ -77,6 +78,11 @@ Options:
 				Name:    "trim-space",
 				Aliases: []string{"s"},
 				Usage:   "Disallow leading and trailing white spaces in files",
+			},
+			&cli.BoolFlag{
+				Name:    "trim-trailing-space",
+				Aliases: []string{"S"},
+				Usage:   "Disallow trailing white spaces in each line",
 			},
 			&cli.BoolFlag{
 				Name:    "ignore-notfound",
@@ -92,10 +98,11 @@ Options:
 
 func (r *Runner) run(ctx context.Context, c *cli.Command) error {
 	param := &controller.ParamRun{
-		Fix:            c.Bool("fix"),
-		IsTrimSpace:    c.Bool("trim-space"),
-		IgnoreNotFound: c.Bool("ignore-notfound"),
-		Args:           c.Args().Slice(),
+		Fix:             c.Bool("fix"),
+		IsTrimSpace:     c.Bool("trim-space"),
+		IsTrailingSpace: c.Bool("trim-trailing-space"),
+		IgnoreNotFound:  c.Bool("ignore-notfound"),
+		Args:            c.Args().Slice(),
 	}
 
 	ctrl := controller.New(afero.NewOsFs(), r.Stdout)

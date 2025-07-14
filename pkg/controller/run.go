@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"unicode"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
@@ -13,10 +14,11 @@ import (
 )
 
 type ParamRun struct {
-	Fix            bool
-	IsTrimSpace    bool
-	IgnoreNotFound bool
-	Args           []string
+	Fix             bool
+	IsTrimSpace     bool
+	IsTrailingSpace bool
+	IgnoreNotFound  bool
+	Args            []string
 }
 
 func (c *Controller) Run(_ context.Context, logE *logrus.Entry, param *ParamRun) error {
@@ -43,7 +45,7 @@ func (c *Controller) handleFile(logE *logrus.Entry, param *ParamRun, filePath st
 		}
 		return fmt.Errorf("open a file: %w", err)
 	}
-	content, err := c.handleFileContent(logE, param, string(f))
+	content, err := handleFileContent(logE, param, string(f))
 	if err != nil {
 		return err
 	}
@@ -61,29 +63,34 @@ func (c *Controller) handleFile(logE *logrus.Entry, param *ParamRun, filePath st
 	return nil
 }
 
-func (c *Controller) handleFileContent(logE *logrus.Entry, param *ParamRun, content string) (string, error) {
+func handleFileContent(logE *logrus.Entry, param *ParamRun, content string) (string, error) {
 	lines := strings.Split(content, "\n")
-	numOfLines := len(lines)
-	if lines[numOfLines-1] != "" {
-		if !param.Fix {
-			return "", errors.New("a newline at the end of file is missing")
+	if param.IsTrailingSpace {
+		for i, line := range lines {
+			newL := strings.TrimRightFunc(line, unicode.IsSpace)
+			if newL != line {
+				logE.WithField("line_number", i+1).Warn("trailing white spaces in a line are found")
+			}
+			lines[i] = newL
 		}
+	}
+	if lines[len(lines)-1] != "" {
+		// Check if the last line has a newline character
 		logE.Warn("a newline at the end of file is missing")
-		if param.IsTrimSpace {
-			return strings.TrimSpace(content) + "\n", nil
-		}
-		return content + "\n", nil
+		lines = append(lines, "")
 	}
-	if !param.IsTrimSpace {
-		return "", nil
+	var newContent string
+	if param.IsTrimSpace {
+		newContent = strings.TrimSpace(strings.Join(lines, "\n")) + "\n"
+	} else {
+		newContent = strings.Join(lines, "\n")
 	}
-	newContent := strings.TrimSpace(content) + "\n"
 	if content == newContent {
 		return "", nil
 	}
 	if !param.Fix {
-		return "", errors.New("leading and trailing white spaces in files should be trimmed")
+		return "", errors.New("a file should be fixed")
 	}
-	logE.Warn("leading and trailing white spaces in files should be trimmed")
+	logE.Info("a file is fixed")
 	return newContent, nil
 }

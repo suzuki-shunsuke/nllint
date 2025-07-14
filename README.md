@@ -1,6 +1,6 @@
 # nllint
 
-Linter to check newlines at the end of files
+Linter and formatter of newlines and trailing spaces in files
 
 <img width="870" alt="image" src="https://github.com/suzuki-shunsuke/nllint/assets/13323303/6962481e-d74e-47a6-bdd0-cd31edae1771">
 
@@ -36,7 +36,7 @@ Please see https://stackoverflow.com/a/729795/6364492
 
 ## Install
 
-nllint is a single binary written in [Go](https://go.dev/). So you only need to install an execurable file into `$PATH`.
+nllint is a single binary written in [Go](https://go.dev/). So you only need to install an executable file into `$PATH`.
 
 1. [Homebrew](https://brew.sh/)
 
@@ -75,6 +75,7 @@ Options:
   -version, -v          Show version
   -fix, -f              Fix files
   -trim-space, -s       Disallow leading and trailing white spaces in files
+  -trim-trailing-space, -S  Disallow trailing white spaces in each line
   -ignore-notfound, -i  Ignore not found files
 ```
 
