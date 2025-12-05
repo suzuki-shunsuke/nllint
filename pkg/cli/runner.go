@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
 	"github.com/suzuki-shunsuke/nllint/pkg/controller"
 	"github.com/urfave/cli/v3"
@@ -16,7 +16,6 @@ type Runner struct {
 	Stdout     io.Writer
 	Stderr     io.Writer
 	LDFlags    *LDFlags
-	LogE       *logrus.Entry
 	Env        *Env
 	IsTerminal bool
 }
@@ -48,7 +47,7 @@ func (l *LDFlags) VersionString() string {
 	return fmt.Sprintf("%s (%s)", l.Version, l.Date)
 }
 
-func (r *Runner) Run(ctx context.Context, args ...string) error {
+func (r *Runner) Run(ctx context.Context, logger *slog.Logger, args ...string) error {
 	app := &cli.Command{
 		Name:  "nllint",
 		Usage: "Check newlines at the end of files",
@@ -90,13 +89,15 @@ Options:
 				Usage:   "Ignore not found files",
 			},
 		},
-		Action: r.run,
+		Action: func(ctx context.Context, c *cli.Command) error {
+			return r.run(ctx, logger, c)
+		},
 	}
 
 	return app.Run(ctx, args) //nolint:wrapcheck
 }
 
-func (r *Runner) run(ctx context.Context, c *cli.Command) error {
+func (r *Runner) run(ctx context.Context, logger *slog.Logger, c *cli.Command) error {
 	param := &controller.ParamRun{
 		Fix:             c.Bool("fix"),
 		IsTrimSpace:     c.Bool("trim-space"),
@@ -106,5 +107,5 @@ func (r *Runner) run(ctx context.Context, c *cli.Command) error {
 	}
 
 	ctrl := controller.New(afero.NewOsFs(), r.Stdout)
-	return ctrl.Run(ctx, r.LogE, param) //nolint:wrapcheck
+	return ctrl.Run(ctx, logger, param) //nolint:wrapcheck
 }
