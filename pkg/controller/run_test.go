@@ -2,10 +2,10 @@ package controller_test
 
 import (
 	"bytes"
+	"log/slog"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
 	"github.com/suzuki-shunsuke/nllint/pkg/controller"
 )
@@ -154,7 +154,8 @@ func TestController_Run(t *testing.T) { //nolint:funlen,gocognit,cyclop
 			}
 			buf := &bytes.Buffer{}
 			ctrl := controller.New(fs, buf)
-			if err := ctrl.Run(t.Context(), logrus.NewEntry(logrus.New()), d.param); err != nil {
+			logger := slog.New(slog.DiscardHandler)
+			if err := ctrl.Run(t.Context(), logger, d.param); err != nil {
 				if !d.isErr {
 					t.Fatal(err)
 				}

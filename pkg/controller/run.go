@@ -4,13 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"strings"
 	"unicode"
 
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
-	"github.com/suzuki-shunsuke/logrus-error/logerr"
+	"github.com/suzuki-shunsuke/slog-error/slogerr"
 )
 
 type ParamRun struct {
@@ -21,13 +21,13 @@ type ParamRun struct {
 	Args            []string
 }
 
-func (c *Controller) Run(_ context.Context, logE *logrus.Entry, param *ParamRun) error {
+func (c *Controller) Run(_ context.Context, logger *slog.Logger, param *ParamRun) error {
 	failed := false
 	for _, arg := range param.Args {
-		logE := logE.WithField("file_path", arg)
-		if err := c.handleFile(logE, param, arg); err != nil {
+		logger := logger.With("file_path", arg)
+		if err := c.handleFile(logger, param, arg); err != nil {
 			failed = true
-			logerr.WithError(logE, err).Error("a file is invalid")
+			slogerr.WithError(logger, err).Error("a file is invalid")
 		}
 	}
 	if failed {
@@ -36,16 +36,16 @@ func (c *Controller) Run(_ context.Context, logE *logrus.Entry, param *ParamRun)
 	return nil
 }
 
-func (c *Controller) handleFile(logE *logrus.Entry, param *ParamRun, filePath string) error {
+func (c *Controller) handleFile(logger *slog.Logger, param *ParamRun, filePath string) error {
 	f, err := afero.ReadFile(c.fs, filePath)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) && param.IgnoreNotFound {
-			logE.Warn("ignore a file because it doesn't exist")
+			logger.Warn("ignore a file because it doesn't exist")
 			return nil
 		}
 		return fmt.Errorf("open a file: %w", err)
 	}
-	content, err := handleFileContent(logE, param, string(f))
+	content, err := handleFileContent(logger, param, string(f))
 	if err != nil {
 		return err
 	}
@@ -63,20 +63,20 @@ func (c *Controller) handleFile(logE *logrus.Entry, param *ParamRun, filePath st
 	return nil
 }
 
-func handleFileContent(logE *logrus.Entry, param *ParamRun, content string) (string, error) {
+func handleFileContent(logger *slog.Logger, param *ParamRun, content string) (string, error) {
 	lines := strings.Split(content, "\n")
 	if param.IsTrailingSpace {
 		for i, line := range lines {
 			newL := strings.TrimRightFunc(line, unicode.IsSpace)
 			if newL != line {
-				logE.WithField("line_number", i+1).Warn("trailing white spaces in a line are found")
+				logger.Warn("trailing white spaces in a line are found", "line_number", i+1)
 			}
 			lines[i] = newL
 		}
 	}
 	if lines[len(lines)-1] != "" {
 		// Check if the last line has a newline character
-		logE.Warn("a newline at the end of file is missing")
+		logger.Warn("a newline at the end of file is missing")
 		lines = append(lines, "")
 	}
 	var newContent string
@@ -91,6 +91,6 @@ func handleFileContent(logE *logrus.Entry, param *ParamRun, content string) (str
 	if !param.Fix {
 		return "", errors.New("a file should be fixed")
 	}
-	logE.Info("a file is fixed")
+	logger.Info("a file is fixed")
 	return newContent, nil
 }
