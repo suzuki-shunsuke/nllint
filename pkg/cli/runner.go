@@ -2,53 +2,24 @@ package cli
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log/slog"
 
 	"github.com/spf13/afero"
 	"github.com/suzuki-shunsuke/nllint/pkg/controller"
+	"github.com/suzuki-shunsuke/slog-util/slogutil"
+	"github.com/suzuki-shunsuke/urfave-cli-v3-util/urfave"
 	"github.com/urfave/cli/v3"
 )
 
-type Runner struct {
-	Stdin      io.Reader
-	Stdout     io.Writer
-	Stderr     io.Writer
-	LDFlags    *LDFlags
-	Env        *Env
-	IsTerminal bool
-}
-
-type Env struct {
-	Config     string
-	ConfigBody string
-}
-
-type LDFlags struct {
-	Version string
-	Commit  string
-	Date    string
-}
-
-func (l *LDFlags) VersionString() string {
-	if l == nil {
-		return "unknown"
+func Run(ctx context.Context, logger *slogutil.Logger, env *urfave.Env) error {
+	r := &Runner{
+		Stdout: env.Stdout,
 	}
-	if l.Version == "" {
-		if l.Date == "" {
-			return "unknown"
-		}
-		return fmt.Sprintf("(%s)", l.Date)
+	ldFlags := &LDFlags{
+		Version: env.Version,
 	}
-	if l.Date == "" {
-		return l.Version
-	}
-	return fmt.Sprintf("%s (%s)", l.Version, l.Date)
-}
-
-func (r *Runner) Run(ctx context.Context, logger *slog.Logger, args ...string) error {
-	app := &cli.Command{
+	return (&cli.Command{ //nolint:wrapcheck
 		Name:  "nllint",
 		Usage: "Check newlines at the end of files",
 		CustomRootCommandHelpTemplate: `nllint - Check newlines at the end of files
@@ -66,7 +37,7 @@ Options:
   -trim-trailing-space, -S  Disallow trailing white spaces in each line
   -ignore-notfound, -i      Ignore not found files
 `,
-		Version: r.LDFlags.VersionString(),
+		Version: ldFlags.VersionString(),
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:    "fix",
@@ -90,11 +61,27 @@ Options:
 			},
 		},
 		Action: func(ctx context.Context, c *cli.Command) error {
-			return r.run(ctx, logger, c)
+			return r.run(ctx, logger.Logger, c)
 		},
-	}
+	}).Run(ctx, env.Args)
+}
 
-	return app.Run(ctx, args) //nolint:wrapcheck
+type Runner struct {
+	Stdout io.Writer
+}
+
+type LDFlags struct {
+	Version string
+}
+
+func (l *LDFlags) VersionString() string {
+	if l == nil {
+		return "unknown"
+	}
+	if l.Version == "" {
+		return "unknown"
+	}
+	return l.Version
 }
 
 func (r *Runner) run(ctx context.Context, logger *slog.Logger, c *cli.Command) error {
