@@ -2,9 +2,9 @@
 name: test
 on: workflow_call
 jobs:
-  test:
+  integration-test:
     timeout-minutes: 15
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions: {}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
@@ -21,7 +21,6 @@ jobs:
       - run: golangci-lint run --timeout 120s
         env:
           AQUA_GITHUB_TOKEN: ${{github.token}}
-      - run: go test -v ./... -race -covermode=atomic
       - run: go install ./cmd/nllint
       - run: nllint --version
       - run: git ls-files | xargs nllint -f -s
