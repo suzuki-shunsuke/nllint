@@ -19,7 +19,7 @@ func Run(ctx context.Context, logger *slogutil.Logger, env *urfave.Env) error {
 	ldFlags := &LDFlags{
 		Version: env.Version,
 	}
-	return urfave.Command(env, &cli.Command{ //nolint:wrapcheck
+	return (&cli.Command{ //nolint:wrapcheck
 		Name:  "nllint",
 		Usage: "Check newlines at the end of files",
 		CustomRootCommandHelpTemplate: `nllint - Check newlines at the end of files
