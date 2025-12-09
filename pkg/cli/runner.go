@@ -19,55 +19,61 @@ func Run(ctx context.Context, logger *slogutil.Logger, env *urfave.Env) error {
 	ldFlags := &LDFlags{
 		Version: env.Version,
 	}
+	args := &Args{}
 	return (&cli.Command{ //nolint:wrapcheck
-		Name:  "nllint",
-		Usage: "Check newlines at the end of files",
-		CustomRootCommandHelpTemplate: `nllint - Check newlines at the end of files
-
-https://github.com/suzuki-shunsuke/nllint
-
-Usage:
-  nllint [-fix (-f)] [-trim-space (-s)] [-trim-trailing-space (-S)] [-ignore-notfound (-i)] <file path> [<file path>...]
-
-Options:
-  -help, -h                 Show help
-  -version, -v              Show version
-  -fix, -f                  Fix files
-  -trim-space, -s           Disallow leading and trailing white spaces in files
-  -trim-trailing-space, -S  Disallow trailing white spaces in each line
-  -ignore-notfound, -i      Ignore not found files
-`,
+		Name:    "nllint",
+		Usage:   "Check newlines at the end of files",
 		Version: ldFlags.VersionString(),
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
-				Name:    "fix",
-				Aliases: []string{"f"},
-				Usage:   "Fix files",
+				Name:        "fix",
+				Aliases:     []string{"f"},
+				Usage:       "Fix files",
+				Destination: &args.Fix,
 			},
 			&cli.BoolFlag{
-				Name:    "trim-space",
-				Aliases: []string{"s"},
-				Usage:   "Disallow leading and trailing white spaces in files",
+				Name:        "trim-space",
+				Aliases:     []string{"s"},
+				Usage:       "Disallow leading and trailing white spaces in files",
+				Destination: &args.TrimSpace,
 			},
 			&cli.BoolFlag{
-				Name:    "trim-trailing-space",
-				Aliases: []string{"S"},
-				Usage:   "Disallow trailing white spaces in each line",
+				Name:        "trim-trailing-space",
+				Aliases:     []string{"S"},
+				Usage:       "Disallow trailing white spaces in each line",
+				Destination: &args.TrimTrailingSpace,
 			},
 			&cli.BoolFlag{
-				Name:    "ignore-notfound",
-				Aliases: []string{"i"},
-				Usage:   "Ignore not found files",
+				Name:        "ignore-notfound",
+				Aliases:     []string{"i"},
+				Usage:       "Ignore not found files",
+				Destination: &args.IgnoreNotFound,
 			},
 		},
-		Action: func(ctx context.Context, c *cli.Command) error {
-			return r.run(ctx, logger.Logger, c)
+		Arguments: []cli.Argument{
+			&cli.StringArgs{
+				Name:        "file",
+				Destination: &args.Files,
+				Max:         -1,
+			},
+		},
+		Action: func(ctx context.Context, _ *cli.Command) error {
+			return r.run(ctx, logger.Logger, args)
 		},
 	}).Run(ctx, env.Args)
 }
 
 type Runner struct {
 	Stdout io.Writer
+}
+
+type Args struct {
+	Fix               bool
+	TrimSpace         bool
+	TrimTrailingSpace bool
+	IgnoreNotFound    bool
+
+	Files []string
 }
 
 type LDFlags struct {
@@ -84,13 +90,13 @@ func (l *LDFlags) VersionString() string {
 	return l.Version
 }
 
-func (r *Runner) run(ctx context.Context, logger *slog.Logger, c *cli.Command) error {
+func (r *Runner) run(ctx context.Context, logger *slog.Logger, args *Args) error {
 	param := &controller.ParamRun{
-		Fix:             c.Bool("fix"),
-		IsTrimSpace:     c.Bool("trim-space"),
-		IsTrailingSpace: c.Bool("trim-trailing-space"),
-		IgnoreNotFound:  c.Bool("ignore-notfound"),
-		Args:            c.Args().Slice(),
+		Fix:             args.Fix,
+		IsTrimSpace:     args.TrimSpace,
+		IsTrailingSpace: args.TrimTrailingSpace,
+		IgnoreNotFound:  args.IgnoreNotFound,
+		Args:            args.Files,
 	}
 
 	ctrl := controller.New(afero.NewOsFs(), r.Stdout)
