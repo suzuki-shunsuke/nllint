@@ -142,6 +142,33 @@ func TestController_Run(t *testing.T) { //nolint:funlen,gocognit,cyclop
 				Fix:         true,
 			},
 		},
+		{
+			name: "full-width space is detected",
+			files: map[string]string{
+				"foo": "hello\u3000world\n",
+			},
+			expFiles: map[string]string{
+				"foo": "hello\u3000world\n",
+			},
+			param: &controller.ParamRun{
+				Args: []string{"foo"},
+			},
+			isErr: true,
+		},
+		{
+			name: "full-width space (fix)",
+			files: map[string]string{
+				"foo": "hello\u3000world\n",
+			},
+			expFiles: map[string]string{
+				"foo": "hello world\n",
+			},
+			param: &controller.ParamRun{
+				Args: []string{"foo"},
+				Fix:  true,
+			},
+			stdout: "foo\n",
+		},
 	}
 	for _, d := range data {
 		t.Run(d.name, func(t *testing.T) {

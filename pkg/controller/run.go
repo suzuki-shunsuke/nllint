@@ -65,6 +65,15 @@ func (c *Controller) handleFile(logger *slog.Logger, param *ParamRun, filePath s
 
 func handleFileContent(logger *slog.Logger, param *ParamRun, content string) (string, error) {
 	lines := strings.Split(content, "\n")
+	{
+		for i, line := range lines {
+			newL := strings.ReplaceAll(line, "\u3000", " ")
+			if newL != line {
+				logger.Warn("full-width spaces are found", "line_number", i+1)
+			}
+			lines[i] = newL
+		}
+	}
 	if param.IsTrailingSpace {
 		for i, line := range lines {
 			newL := strings.TrimRightFunc(line, unicode.IsSpace)
