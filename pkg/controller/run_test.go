@@ -10,7 +10,7 @@ import (
 	"github.com/suzuki-shunsuke/nllint/pkg/controller"
 )
 
-func TestController_Run(t *testing.T) { //nolint:funlen,gocognit,cyclop
+func TestController_Run(t *testing.T) { //nolint:funlen,cyclop
 	t.Parallel()
 	data := []struct {
 		name     string
@@ -127,6 +127,7 @@ func TestController_Run(t *testing.T) { //nolint:funlen,gocognit,cyclop
 				Args: []string{"foo"},
 				Fix:  true,
 			},
+			stdout: "foo\n",
 		},
 		{
 			name: "enable TrimSpace (fix)",
@@ -141,6 +142,7 @@ func TestController_Run(t *testing.T) { //nolint:funlen,gocognit,cyclop
 				IsTrimSpace: true,
 				Fix:         true,
 			},
+			stdout: "foo\n",
 		},
 		{
 			name: "full-width space is detected",
@@ -154,6 +156,19 @@ func TestController_Run(t *testing.T) { //nolint:funlen,gocognit,cyclop
 				Args: []string{"foo"},
 			},
 			isErr: true,
+		},
+		{
+			name: "ignore a binary file",
+			files: map[string]string{
+				"foo.zip": "PK\x03\x04\x00\x00hello",
+			},
+			expFiles: map[string]string{
+				"foo.zip": "PK\x03\x04\x00\x00hello",
+			},
+			param: &controller.ParamRun{
+				Args: []string{"foo.zip"},
+				Fix:  true,
+			},
 		},
 		{
 			name: "full-width space (fix)",
@@ -182,28 +197,26 @@ func TestController_Run(t *testing.T) { //nolint:funlen,gocognit,cyclop
 			buf := &bytes.Buffer{}
 			ctrl := controller.New(fs, buf)
 			logger := slog.New(slog.DiscardHandler)
-			if err := ctrl.Run(t.Context(), logger, d.param); err != nil {
-				if !d.isErr {
+			err := ctrl.Run(t.Context(), logger, d.param)
+			switch {
+			case err != nil && !d.isErr:
+				t.Fatal(err)
+			case err == nil && d.isErr:
+				t.Fatal("error must be returned")
+			}
+			stdout := buf.String()
+			if diff := cmp.Diff(stdout, d.stdout); diff != "" {
+				t.Fatalf("stdout:\n%s", diff)
+			}
+			for k := range d.files {
+				b, err := afero.ReadFile(fs, k)
+				if err != nil {
 					t.Fatal(err)
 				}
-				stdout := buf.String()
-				if diff := cmp.Diff(stdout, d.stdout); diff != "" {
-					t.Fatalf("stdout:\n%s", diff)
+				a := d.expFiles[k]
+				if diff := cmp.Diff(string(b), a); diff != "" {
+					t.Fatalf("%s\n%s", k, diff)
 				}
-				for k := range d.files {
-					b, err := afero.ReadFile(fs, k)
-					if err != nil {
-						t.Fatal(err)
-					}
-					a := d.expFiles[k]
-					if diff := cmp.Diff(string(b), a); diff != "" {
-						t.Fatalf("%s\n%s", k, diff)
-					}
-				}
-				return
-			}
-			if d.isErr {
-				t.Fatal("error must be returned")
 			}
 		})
 	}
