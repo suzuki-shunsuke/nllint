@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -44,6 +45,10 @@ func (c *Controller) handleFile(logger *slog.Logger, param *ParamRun, filePath s
 			return nil
 		}
 		return fmt.Errorf("open a file: %w", err)
+	}
+	if bytes.IndexByte(f, 0) >= 0 {
+		logger.Warn("ignore a binary file")
+		return nil
 	}
 	content, err := handleFileContent(logger, param, string(f))
 	if err != nil {
