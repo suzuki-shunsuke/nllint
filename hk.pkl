@@ -19,9 +19,10 @@ local linters = new Mapping<String, Step> {
     batch = true
   }
   ["ascii"] {
+    // https://github.com/suzuki-shunsuke/langcheck
     glob = List("**/*")
-    check = "bash scripts/check-ascii {{files}}"
-    fix = "bash scripts/check-ascii {{files}}" // run as check in fix mode (no real fix possible)
+    check = "langcheck check {{files}}"
+    fix = "langcheck check {{files}}" // run as check in fix mode (no real fix possible)
     batch = true
   }
 }
@@ -34,8 +35,9 @@ hooks {
   }
   ["commit-msg"] {
     steps {
+      // https://github.com/suzuki-shunsuke/langcheck
       ["validate-commit-msg"] {
-        check = "bash scripts/validate-commit-msg {{commit_msg_file}}"
+        check = "langcheck check {{commit_msg_file}}"
       }
     }
   }
