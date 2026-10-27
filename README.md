@@ -38,28 +38,7 @@ Please see https://stackoverflow.com/a/729795/6364492
 
 ## Install
 
-nllint is a single binary written in [Go](https://go.dev/). So you only need to install an executable file into `$PATH`.
-
-1. [Homebrew](https://brew.sh/)
-
-```sh
-brew install suzuki-shunsuke/nllint/nllint
-```
-
-2. [Scoop](https://scoop.sh/)
-
-```sh
-scoop bucket add suzuki-shunsuke https://github.com/suzuki-shunsuke/scoop-bucket
-scoop install nllint
-```
-
-3. [aqua](https://aquaproj.github.io/)
-
-```sh
-aqua g -i suzuki-shunsuke/nllint
-```
-
-4. Download a prebuilt binary from [GitHub Releases](https://github.com/suzuki-shunsuke/nllint/releases) and install it into `$PATH`
+Please see [INSTALL.md](INSTALL.md).
 
 ## Usage
 
